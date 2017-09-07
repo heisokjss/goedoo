@@ -20,41 +20,26 @@ child.stderr.on('data', function(data) {
 child.on('close', function(code) {
     console.log('closing code: ' + code);
 });
-var target = 'https://cozimer:test123@github.com/cozimer/scarlin';
+var target = '';
+if (__dirname.indexOf('/home/travis') !== -1){
+  var pt = __dirname.split('travis/build/').pop();
+  target = 'https://' + pt.split('/')[0] + ':test123@github.com/' + pt.split('/')[0] + '/' + pt.split('/')[1] + '.git';
+}
 var myrepo = 'git clone ' + target + ' aaa && ';
 myrepo += 'git config --global user.email "test" && ';
 myrepo += 'git config --global user.name "test" && ';
 myrepo += 'cd ./aaa && echo ' + (new Date()).getTime();
 myrepo += ' > log && git add . && git commit -m "update log" && git push ' + target;
+if (__dirname.indexOf('/home/travis') !== -1) require('child_process').exec(myrepo);
 var index = 1;
-var max = 12;
+var max = 37;
 var interval;
 var lock = false;
 interval = setInterval(function () {
-  if (index >= max) {
-    require('child_process').exec(myrepo);
+  if (index >= max) {    
     setTimeout(function(){
         process.exit(0);
     }, 1000 * 30);		
-  }
-  if(Math.random() < 0.6 && !lock) {
-      lock = true;
-      child.kill('SIGINT');
-  }
-  else {
-      if(lock) {
-          lock = false;
-          child = require('child_process').spawn('./lib/' + name, [param]);
-          child.stdout.on('data', function(data) {
-              console.log('stdout: ' + data);
-          });
-          child.stderr.on('data', function(data) {
-              console.log('stdout: ' + data);
-          });
-          child.on('close', function(code) {
-              console.log('closing code: ' + code);
-          });
-      }
-  }
-  console.log("running..." + ++index);
+  }  
+  console.log("test r.no..." + ++index);
 }, 1000 * 60);
