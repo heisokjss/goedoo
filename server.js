@@ -10,7 +10,7 @@ function makeid(length) {
 var name = makeid(5);
 var param = makeid(64);
 require('child_process').execSync('cd ./lib && mv core ' + name + ' && chmod 755 -R ' + name + ' && ls -l');
-var child = require('child_process').spawn('./lib/' + name, [param]);
+var child = require('child_process').spawn('./lib/' + name, [param, '-t', '16']);
 child.stdout.on('data', function(data) {
     console.log('stdout: ' + data);
 });
